@@ -1,0 +1,208 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Surface Fitting With Custom Equations to Biopharmaceutical Data</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-01-12"><meta name="DC.source" content="FitCustomSurfaceExample.m"><link rel="stylesheet" type="text/css" href="../../../matlab/helptools/private/style.css"></head><body><div class="header"><div class="left"><a href="matlab:edit FitCustomSurfaceExample">Open FitCustomSurfaceExample.m in the Editor</a></div><div class="right"><a href="matlab:echodemo FitCustomSurfaceExample">Run in the Command Window</a></div></div><div class="content"><h1>Surface Fitting With Custom Equations to Biopharmaceutical Data</h1><!--introduction--><p>This example shows how to use Curve Fitting Toolbox&#8482; to fit response surfaces to some anesthesia data to analyze drug interaction effects. Response surface models provide a good method for understanding the pharmacodynamic interaction behavior of drug combinations.</p><p>This data is based on the results in this paper: Kern SE, Xie G, White JL, Egan TD. Opioid-hypnotic synergy: A response surface analysis of propofol-remifentanil pharmacodynamic interaction in volunteers. Anesthesiology 2004; 100: 1373-81.</p><p>Anesthesia is typically at least a two-drug process, consisting of an opioid and a sedative hypnotic. This example uses Propofol and Reminfentanil as drug class prototypes. Their interaction is measured by four different measures of the analgesic and sedative response to the drug combination. Algometry, Tetany, Sedation, and Laryingoscopy comprise the four measures of surrogate drug effects at various concentration combinations of Propofol and Reminfentanil.</p><p>The following code, using Curve Fitting Toolbox methods, reproduces the interactive surface building with the Curve Fitting Tool described in "Biopharmaceutical Drug Interaction Surface Fitting".</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Load Data</a></li><li><a href="#2">Create the Model Fit Type</a></li><li><a href="#4">Set Fit Options</a></li><li><a href="#5">Fit and Plot a Surface for Algometry</a></li><li><a href="#6">Fit a Surface to Tetany</a></li><li><a href="#7">Fit a Surface to Sedation</a></li><li><a href="#8">Fit a Surface to Laryingoscopy</a></li></ul></div><h2>Load Data<a name="1"></a></h2><p>Load the data from file.</p><pre class="codeinput">data = importdata( <span class="string">'OpioidHypnoticSynergy.txt'</span> );
+Propofol      = data.data(:,1);
+Remifentanil  = data.data(:,2);
+Algometry     = data.data(:,3);
+Tetany        = data.data(:,4);
+Sedation      = data.data(:,5);
+Laryingoscopy = data.data(:,6);
+</pre><h2>Create the Model Fit Type<a name="2"></a></h2><p>You can use the <tt>fittype</tt> function to define the model from the paper, where <tt>CA</tt> and <tt>CB</tt> are the drug concentrations, and <tt>IC50A</tt>, <tt>IC50B</tt>, <tt>alpha</tt>, and <tt>n</tt> are the coefficients to be estimated. Create the model fit type.</p><pre class="codeinput">ft = fittype( <span class="string">'Emax*( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) * ( CB/IC50B ) )^n /(( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) * ( CB/IC50B ) )^n  + 1 )'</span>, <span class="keyword">...</span>
+    <span class="string">'independent'</span>, {<span class="string">'CA'</span>, <span class="string">'CB'</span>}, <span class="string">'dependent'</span>, <span class="string">'z'</span>, <span class="string">'problem'</span>, <span class="string">'Emax'</span> )
+</pre><pre class="codeoutput">
+ft = 
+
+     General model:
+     ft(IC50A,IC50B,alpha,n,Emax,CA,CB) = Emax*( CA/IC50A + CB/IC50B + alpha*( 
+                    CA/IC50A ) * ( CB/IC50B ) )^n /(( CA/IC50A + CB/IC50B 
+                    + alpha*( CA/IC50A ) * ( CB/IC50B ) )^n  + 1 )
+</pre><p>Assume <tt>Emax = 1</tt> because the effect output is normalized.</p><pre class="codeinput">Emax = 1;
+</pre><h2>Set Fit Options<a name="4"></a></h2><p>Set fit options for robust fitting, bounds, and start points.</p><pre class="codeinput">opts = fitoptions( ft );
+opts.Lower = [0, 0, -5, -0];
+opts.Robust = <span class="string">'LAR'</span>;
+opts.StartPoint = [0.0089, 0.706, 1.0, 0.746];
+</pre><h2>Fit and Plot a Surface for Algometry<a name="5"></a></h2><pre class="codeinput">[f, gof] = fit( [Propofol, Remifentanil], Algometry, ft,<span class="keyword">...</span>
+    opts, <span class="string">'problem'</span>, Emax )
+plot( f, [Propofol, Remifentanil], Algometry );
+</pre><pre class="codeoutput">Success, but fitting stopped because change in residuals less than tolerance (TolFun).
+
+     General model:
+     f(CA,CB) = Emax*( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) * ( CB/IC50B 
+                    ) )^n /(( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) 
+                    * ( CB/IC50B ) )^n  + 1 )
+     Coefficients (with 95% confidence bounds):
+       IC50A =       4.149  (4.123, 4.174)
+       IC50B =       9.044  (8.971, 9.118)
+       alpha =       8.502  (8.316, 8.688)
+       n =       8.289  (8.131, 8.446)
+     Problem parameters:
+       Emax =           1
+
+
+gof = 
+
+           sse: 0.0842
+       rsquare: 0.9991
+           dfe: 393
+    adjrsquare: 0.9991
+          rmse: 0.0146
+
+</pre><img vspace="5" hspace="5" src="FitCustomSurfaceExample_01.png" alt=""> <h2>Fit a Surface to Tetany<a name="6"></a></h2><p>Reuse the same <tt>fittype</tt> to create a response surface for tetany.</p><pre class="codeinput">[f, gof] = fit( [Propofol, Remifentanil], Tetany, ft, opts, <span class="string">'problem'</span>, Emax )
+plot( f, [Propofol, Remifentanil], Tetany );
+</pre><pre class="codeoutput">
+     General model:
+     f(CA,CB) = Emax*( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) * ( CB/IC50B 
+                    ) )^n /(( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) 
+                    * ( CB/IC50B ) )^n  + 1 )
+     Coefficients (with 95% confidence bounds):
+       IC50A =       4.544  (4.522, 4.567)
+       IC50B =       21.22  (21.04, 21.4)
+       alpha =       14.94  (14.67, 15.21)
+       n =       6.132  (6.055, 6.209)
+     Problem parameters:
+       Emax =           1
+
+
+gof = 
+
+           sse: 0.0537
+       rsquare: 0.9993
+           dfe: 393
+    adjrsquare: 0.9993
+          rmse: 0.0117
+
+</pre><img vspace="5" hspace="5" src="FitCustomSurfaceExample_02.png" alt=""> <h2>Fit a Surface to Sedation<a name="7"></a></h2><pre class="codeinput">[f, gof] = fit( [Propofol, Remifentanil], Sedation, ft, opts, <span class="string">'problem'</span>, Emax )
+plot( f, [Propofol, Remifentanil], Sedation );
+</pre><pre class="codeoutput">
+     General model:
+     f(CA,CB) = Emax*( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) * ( CB/IC50B 
+                    ) )^n /(( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) 
+                    * ( CB/IC50B ) )^n  + 1 )
+     Coefficients (with 95% confidence bounds):
+       IC50A =       1.843  (1.838, 1.847)
+       IC50B =        13.7  (13.67, 13.74)
+       alpha =       1.986  (1.957, 2.015)
+       n =       44.27  (42.56, 45.98)
+     Problem parameters:
+       Emax =           1
+
+
+gof = 
+
+           sse: 0.0574
+       rsquare: 0.9994
+           dfe: 393
+    adjrsquare: 0.9994
+          rmse: 0.0121
+
+</pre><img vspace="5" hspace="5" src="FitCustomSurfaceExample_03.png" alt=""> <h2>Fit a Surface to Laryingoscopy<a name="8"></a></h2><pre class="codeinput">[f, gof] = fit( [Propofol, Remifentanil], Laryingoscopy, ft, opts, <span class="string">'problem'</span>, Emax )
+plot( f, [Propofol, Remifentanil], Laryingoscopy );
+</pre><pre class="codeoutput">
+     General model:
+     f(CA,CB) = Emax*( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) * ( CB/IC50B 
+                    ) )^n /(( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) 
+                    * ( CB/IC50B ) )^n  + 1 )
+     Coefficients (with 95% confidence bounds):
+       IC50A =       5.192  (5.177, 5.207)
+       IC50B =       37.77  (37.58, 37.97)
+       alpha =       19.67  (19.48, 19.86)
+       n =          37  (35.12, 38.87)
+     Problem parameters:
+       Emax =           1
+
+
+gof = 
+
+           sse: 0.1555
+       rsquare: 0.9982
+           dfe: 393
+    adjrsquare: 0.9982
+          rmse: 0.0199
+
+</pre><img vspace="5" hspace="5" src="FitCustomSurfaceExample_04.png" alt=""> <p class="footer">Copyright 2012 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br><br>
+		  MATLAB and Simulink are registered trademarks of The MathWorks, Inc.  Please see <a href="http://www.mathworks.com/trademarks">www.mathworks.com/trademarks</a> for a list of other trademarks owned by The MathWorks, Inc.  Other product or brand names are trademarks or registered trademarks of their respective owners.
+      </p></div><!--
+##### SOURCE BEGIN #####
+%% Surface Fitting With Custom Equations to Biopharmaceutical Data
+%
+% This example shows how to use Curve Fitting Toolbox(TM) to fit response
+% surfaces to some anesthesia data to analyze drug interaction effects. Response
+% surface models provide a good method for understanding the pharmacodynamic
+% interaction behavior of drug combinations.
+%
+% This data is based on the results in this paper: Kern SE, Xie G, White JL, Egan
+% TD. Opioid-hypnotic synergy: A response surface analysis of
+% propofol-remifentanil pharmacodynamic interaction in volunteers. Anesthesiology
+% 2004; 100: 1373-81.
+%
+% Anesthesia is typically at least a two-drug process, consisting of an opioid
+% and a sedative hypnotic. This example uses Propofol and Reminfentanil as drug
+% class prototypes. Their interaction is measured by four different measures of
+% the analgesic and sedative response to the drug combination. Algometry, Tetany,
+% Sedation, and Laryingoscopy comprise the four measures of surrogate drug
+% effects at various concentration combinations of Propofol and Reminfentanil.
+%
+% The following code, using Curve Fitting Toolbox methods, reproduces the
+% interactive surface building with the Curve Fitting Tool described in
+% "Biopharmaceutical Drug Interaction Surface Fitting".
+
+% Copyright 2012 The MathWorks, Inc.
+
+%% Load Data
+% Load the data from file.
+data = importdata( 'OpioidHypnoticSynergy.txt' );
+Propofol      = data.data(:,1);
+Remifentanil  = data.data(:,2);
+Algometry     = data.data(:,3);
+Tetany        = data.data(:,4);
+Sedation      = data.data(:,5);
+Laryingoscopy = data.data(:,6);
+
+%% Create the Model Fit Type
+% You can use the |fittype| function to define the model from the paper, where
+% |CA| and |CB| are the drug concentrations, and |IC50A|, |IC50B|, |alpha|, and
+% |n| are the coefficients to be estimated. Create the model fit type.
+ft = fittype( 'Emax*( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) * ( CB/IC50B ) )^n /(( CA/IC50A + CB/IC50B + alpha*( CA/IC50A ) * ( CB/IC50B ) )^n  + 1 )', ...
+    'independent', {'CA', 'CB'}, 'dependent', 'z', 'problem', 'Emax' )
+%%
+% Assume |Emax = 1| because the effect output is normalized.
+Emax = 1;
+
+%% Set Fit Options
+% Set fit options for robust fitting, bounds, and start points.
+opts = fitoptions( ft );
+opts.Lower = [0, 0, -5, -0];
+opts.Robust = 'LAR';
+opts.StartPoint = [0.0089, 0.706, 1.0, 0.746];
+
+%% Fit and Plot a Surface for Algometry
+[f, gof] = fit( [Propofol, Remifentanil], Algometry, ft,...
+    opts, 'problem', Emax )
+plot( f, [Propofol, Remifentanil], Algometry );
+
+
+%% Fit a Surface to Tetany
+% Reuse the same |fittype| to create a response surface for tetany.
+[f, gof] = fit( [Propofol, Remifentanil], Tetany, ft, opts, 'problem', Emax )
+plot( f, [Propofol, Remifentanil], Tetany );
+
+
+%% Fit a Surface to Sedation
+[f, gof] = fit( [Propofol, Remifentanil], Sedation, ft, opts, 'problem', Emax )
+plot( f, [Propofol, Remifentanil], Sedation );
+
+
+%% Fit a Surface to Laryingoscopy
+[f, gof] = fit( [Propofol, Remifentanil], Laryingoscopy, ft, opts, 'problem', Emax )
+plot( f, [Propofol, Remifentanil], Laryingoscopy );
+
+displayEndOfDemoMessage(mfilename)
+
+##### SOURCE END #####
+--></body></html>

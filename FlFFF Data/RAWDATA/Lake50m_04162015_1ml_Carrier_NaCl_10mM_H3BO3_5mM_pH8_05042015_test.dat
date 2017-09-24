@@ -1,0 +1,446 @@
+[Method]
+[General]
+Identifier: 	Carrier1mMNaCl pH7 08122013
+SEC_Run: 	0
+ChOutFlow:  	0.7
+SlotFlow:   	0
+EndTime:    	47
+Spacer:     	350
+[Injection]
+InjectFlow: 	0.1
+InjectXFlow:	1.5
+InjectTime:	15
+Transtime:  	0.499999998509884
+[Elution]
+Rowanz:     	4
+Row:          	1
+Time 0:       	0
+Time 1:       	12
+Flow 0:       	1.5
+Flow 1:       	1.5
+Typ:          	1
+Exp:          	0
+Row:          	2
+Time 0:       	12
+Time 1:       	17
+Flow 0:       	1.5
+Flow 1:       	0
+Typ:          	2
+Exp:          	1
+Row:          	3
+Time 0:       	17
+Time 1:       	18
+Flow 0:       	0
+Flow 1:       	0
+Typ:          	0
+Exp:          	0
+Row:          	4
+Time 0:       	18
+Time 1:       	47
+Flow 0:       	0
+Flow 1:       	0
+Typ:          	0
+Exp:          	0
+[Rinsing]
+RinseTime:     	5
+RinseTipFlow:  	1
+RinseFocusFlow:	0
+RinseSlotFlow: 	0
+RinseValve: 	1
+[End Method]
+[Rundata]
+Runnumber:  	1
+User:       	postnova analytics
+Viscosity:  	0.0088
+RefIndex:   	1.33
+Solvent:    	NaCl_15mM
+Vial:       	0
+InjectVol:  	1000
+Conc:       	650
+dndc:       	0.165
+Extinction: 	0.152
+Sample:     	Lake50m_04162015_1ml_Carrier_NaCl_10mM_H3BO3_5mM_pH8_05042015_test
+Description:	Lake50m_04162015_1ml_Carrier_NaCl_10mM_H3BO3_5mM_pH8_05042015_test
+sample volume 1ml
+UV1 at 254nm aux range 1
+UV2 at 280nm range 0.001
+Fluorescence 1 Ex/Em 350/450
+sensitivity 1 gain 3 mode 1 range 2
+Fluorescence 2 Ex/Em 275/340
+sensitivity 1 gain 2 mode 1 range 2
+membran: 300Da PES
+sample volume 1ml
+carrier solution NaCl_15mM
+Measurement time with cross flow 12 min
+Measurement time with decaying cross flow 5 min
+Measurement time with no cross flow 30 min
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[End String]
+CycleAnz:   	2
+WhenInject: 	2
+ProjectDir: 	C:\AF2000 Data\20140910
+RunID:      	Lake50m_04162015_1ml_Carrier_NaCl_10mM_H3BO3_5mM_pH8_05042015_test
+[Data]
+Startdate: 
+Stopdate: 04/05/2015 20:30:17
+DetAnz:31
+LSDetType:	8
+Detector 1
+UV_1
+Volt
+1
+1
+0.310000
+9.33300E-02
+635.000000
+Detector 2
+FLD1
+Volt
+2
+1
+0.000000
+1.00000E+00
+635.000000
+Detector 3
+FLD2
+Volt
+3
+1
+0.000000
+1.00000E+00
+635.000000
+Detector 4
+PN 3621 7°
+Volt
+27
+2
+0.000000
+6.30615E-04
+532.000000
+Detector 5
+PN 3621 12°
+Volt
+28
+2
+0.000000
+1.12645E-03
+532.000000
+Detector 6
+PN 3621 20°
+Volt
+29
+2
+0.000000
+7.72195E-04
+532.000000
+Detector 7
+PN 3621 28°
+Volt
+30
+2
+0.000000
+5.97365E-04
+532.000000
+Detector 8
+PN 3621 36°
+Volt
+31
+2
+0.000000
+5.24461E-04
+532.000000
+Detector 9
+PN 3621 44°
+Volt
+32
+2
+0.000000
+4.20173E-04
+532.000000
+Detector 10
+PN 3621 52°
+Volt
+33
+2
+0.000000
+5.44659E-04
+532.000000
+Detector 11
+PN 3621 60°
+Volt
+34
+2
+0.000000
+5.24713E-04
+532.000000
+Detector 12
+PN 3621 68°
+Volt
+35
+2
+0.000000
+5.86385E-04
+532.000000
+Detector 13
+PN 3621 76°
+Volt
+36
+2
+0.000000
+5.32716E-04
+532.000000
+Detector 14
+PN 3621 84°
+Volt
+37
+2
+0.000000
+6.02573E-04
+532.000000
+Detector 15
+PN 3621 92°
+Volt
+38
+2
+0.000000
+6.30615E-04
+532.000000
+Detector 16
+PN 3621 100°
+Volt
+39
+2
+0.000000
+6.08138E-04
+532.000000
+Detector 17
+PN 3621 108°
+Volt
+40
+2
+0.000000
+5.87052E-04
+532.000000
+Detector 18
+PN 3621 116°
+Volt
+41
+2
+0.000000
+5.56162E-04
+532.000000
+Detector 19
+PN 3621 124°
+Volt
+42
+2
+0.000000
+4.84035E-04
+532.000000
+Detector 20
+PN 3621 132°
+Volt
+43
+2
+0.000000
+5.57881E-04
+532.000000
+Detector 21
+PN 3621 140°
+Volt
+44
+2
+0.000000
+4.19575E-04
+532.000000
+Detector 22
+PN 3621 148°
+Volt
+45
+2
+0.000000
+6.08388E-04
+532.000000
+Detector 23
+PN 3621 156°
+Volt
+46
+2
+0.000000
+5.03688E-04
+532.000000
+Detector 24
+PN 3621 164°
+Volt
+47
+2
+0.000000
+6.34944E-04
+532.000000
+Detector 25
+FLD1_2
+Volt
+48
+1
+0.000000
+1.00000E+00
+635.000000
+Detector 26
+UV_2
+Volt
+49
+1
+0.000000
+1.00000E+00
+635.000000
+Detector 27
+RI
+Volt
+50
+0
+0.000000
+1.00000E+00
+635.000000
+Detector 28
+PN 3621 Aux 4
+Volt
+51
+1
+0.000000
+1.00000E+00
+635.000000
+Detector 29
+Pressure
+bar
+4
+4
+0.000000
+1.00000E+00
+635.000000
+Detector 30
+Temperature
+°C
+52
+4
+0.000000
+1.00000E+00
+635.000000
+Detector 31
+Laser Power
+%
+53
+4
+0.000000
+1.00000E+00
+635.000000
+LastEval:   	
+DataAnz:	0
+[End Run]

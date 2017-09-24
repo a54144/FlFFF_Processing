@@ -1,0 +1,146 @@
+[Method]
+[General]
+Identifier: 	Carrier1mMNaCl pH7 08122013
+SEC_Run: 	0
+ChOutFlow:  	0.5
+SlotFlow:   	0
+EndTime:    	50
+Spacer:     	350
+[Injection]
+InjectFlow: 	0.2
+InjectXFlow:	1.7
+InjectTime:	10
+Transtime:  	0.5
+[Elution]
+Rowanz:     	3
+Row:          	1
+Time 0:       	0
+Time 1:       	15
+Flow 0:       	1.7
+Flow 1:       	1.7
+Typ:          	1
+Exp:          	0
+Row:          	2
+Time 0:       	15
+Time 1:       	20
+Flow 0:       	1.7
+Flow 1:       	0
+Typ:          	2
+Exp:          	1
+Row:          	3
+Time 0:       	20
+Time 1:       	50
+Flow 0:       	0
+Flow 1:       	0
+Typ:          	0
+Exp:          	0
+[Rinsing]
+RinseTime:     	5
+RinseTipFlow:  	1
+RinseFocusFlow:	0
+RinseSlotFlow: 	0
+RinseValve: 	1
+[End Method]
+[Rundata]
+Runnumber:  	1
+User:       	postnova analytics
+Viscosity:  	0.0088
+RefIndex:   	1.33
+Solvent:    	NaCl_15mM
+Vial:       	0
+InjectVol:  	1000
+Conc:       	650
+dndc:       	0.165
+Extinction: 	0.152
+Sample:     	PSS_16kDa_40mgL_1ml_Carrier_NaCl_15mM_09162014_smaller_flow_rates
+Description:	PSS_16kDa_40mgL_1ml_Carrier_NaCl_15mM_09162014_smaller_flow_rates
+0.0012-0.0016 g in 30ml water
+sample volume 1ml
+UV1 at 240nm aux range 1
+UV2 at 280nm range 0.001
+Fluorescence 1 Ex/Em 350/450
+sensitivity 2 gain 3 mode 1 range 2
+Fluorescence 2 Ex/Em 275/340 
+sensitivity 2 gain 2 mode 1 range 2
+membran: 300Da rc(polyetherfulfone)
+sample volume 1ml
+carrier solution NaCl_15mM
+Measurement time with cross flow 15 min
+Measurement time with decaying cross flow 5 min
+Measurement time with no cross flow 30 min
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[End String]
+CycleAnz:   	2
+WhenInject: 	2
+ProjectDir: 	C:\AF2000 Data\20140910
+RunID:      	PSS_16kDa_40mgL_1ml_Carrier_NaCl_15mM_09162014_smaller_flow_rates
+[End Run]

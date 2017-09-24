@@ -1,0 +1,189 @@
+[Method]
+[General]
+Identifier: 	Carrier1mMNaCl pH7 08122013
+SEC_Run: 	0
+ChOutFlow:  	0.7
+SlotFlow:   	0
+EndTime:    	47
+Spacer:     	350
+[Injection]
+InjectFlow: 	0.1
+InjectXFlow:	1.5
+InjectTime:	15
+Transtime:  	0.499999998509884
+[Elution]
+Rowanz:     	4
+Row:          	1
+Time 0:       	0
+Time 1:       	12
+Flow 0:       	1.5
+Flow 1:       	1.5
+Typ:          	1
+Exp:          	0
+Row:          	2
+Time 0:       	12
+Time 1:       	17
+Flow 0:       	1.5
+Flow 1:       	0
+Typ:          	2
+Exp:          	1
+Row:          	3
+Time 0:       	17
+Time 1:       	18
+Flow 0:       	0
+Flow 1:       	0
+Typ:          	0
+Exp:          	0
+Row:          	4
+Time 0:       	18
+Time 1:       	47
+Flow 0:       	0
+Flow 1:       	0
+Typ:          	0
+Exp:          	0
+[Rinsing]
+RinseTime:     	5
+RinseTipFlow:  	1
+RinseFocusFlow:	0
+RinseSlotFlow: 	0
+RinseValve: 	1
+[End Method]
+[Rundata]
+Runnumber:  	1
+User:       	postnova analytics
+Viscosity:  	0.0088
+RefIndex:   	1.33
+Solvent:    	NaCl_15mM
+Vial:       	0
+InjectVol:  	1000
+Conc:       	650
+dndc:       	0.165
+Extinction: 	0.152
+Sample:     	Delta Junction_04162015_1ml_Carrier_NaCl_10mM_H3BO3_5mM_pH8_04292015_test
+Description:	Delta Junction_04162015_1ml_Carrier_NaCl_10mM_H3BO3_5mM_pH8_04292015_test
+sample volume 1ml
+UV1 at 254nm aux range 4
+UV2 at 280nm range 0.1
+Fluorescence 1 Ex/Em 350/450
+sensitivity 2 gain 1 mode 1 range 1
+Fluorescence 2 Ex/Em 275/340
+sensitivity 2 gain 3 mode 1 range 1
+membran: 300Da PES
+sample volume 1ml
+carrier solution NaCl_15mM
+Measurement time with cross flow 12 min
+Measurement time with decaying cross flow 5 min
+Measurement time with no cross flow 30 min
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[End String]
+CycleAnz:   	2
+WhenInject: 	2
+ProjectDir: 	C:\AF2000 Data\20140910
+RunID:      	Delta Junction_04162015_1ml_Carrier_NaCl_10mM_H3BO3_5mM_pH8_04292015_test
+[End Run]

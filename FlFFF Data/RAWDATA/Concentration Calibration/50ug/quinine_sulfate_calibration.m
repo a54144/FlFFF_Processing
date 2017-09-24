@@ -1,0 +1,67 @@
+clear;
+clc;
+close all;
+Plot_Selected_Detectors = 1;
+Plot_valid_data = 1;
+addpath('/Users/zhengzhenzhouyeah/study/MATLAB/FUNCTIONZHOU');
+addpath('/Users/zhengzhenzhouyeah/study/GUO/FFF/RAWDATA/UWM/10kDa/20131009/Quinine sulfate standards/'); 
+Detectors_want_to_plot = {'UV_1';'UV_2';'FLD1';'FLD2'};
+Detectors_want_to_plot_modified_names = {'UV_2_5_4';'UV_3_5_5';'FLD1_3_5_0_/_4_5_0';'FLD2_3_5_0_/_4_5_0'};Color_in_letter = 'kgrb';
+
+filename = 'Quinine_Sulfate_50ugL_in_0point05M_H2SO4_100uL_15mM_02132014_no_cross_(1).dat';
+
+
+Selected_Data = ZZ_FFF_Guo2013_UWM_Read_Selected_Detectors_UV_1_UV_2_FLD1_FLD2(filename);
+
+Sensitivity_Calculated = ZZ_FFF_Guo2013_UWM_Sensivity_Calculator_UV_1_UV_2_FLD1_FLD2(filename);
+save Detectors_Sensitivity_UV1UV2FLD1FLD2.dat Sensitivity_Calculated -ascii -tabs;
+time_in_minutes = Selected_Data(:,1);
+
+if Plot_Selected_Detectors == 1;
+    %-----------------------************************-----------------------
+    %Modify the detector names, define color, and plot data
+    h_figure = figure;
+    for detectorr = 1: size(Detectors_want_to_plot,1);
+        plot(time_in_minutes,Selected_Data(:,(1+detectorr)),'color',Color_in_letter(detectorr));
+        hold on;
+    end;
+    %     legend(Detectors_want_to_plot);
+    legend(Detectors_want_to_plot_modified_names);
+%     saveas(h_figure,[filename(1:length(filename)-4),'_UV_1_UV_2_FLD1_FLD2'],'pdf');
+    saveas(h_figure,filename(1:length(filename)-4),'pdf');
+    close all;
+    %End of Modifying etector names, defining color, and plotting data
+    %----------------------------------------------------------------------
+end;
+
+Time_range_valid_peak_Selected_Detectors = ...
+[0.1 2;
+0.1 2;
+0.5 3;
+0.6 3.1];
+Area_Selected_Detectors = zeros(1,size(Detectors_want_to_plot,1));
+if Plot_valid_data == 1;
+h_figure = figure;
+for detectorr = 1: size(Detectors_want_to_plot,1);
+    Data = Selected_Data(:,(1+detectorr));
+    tR_valid = time_in_minutes( (time_in_minutes > Time_range_valid_peak_Selected_Detectors(detectorr,1)) & (time_in_minutes < Time_range_valid_peak_Selected_Detectors(detectorr,2)));
+    Data_valid = Data( (time_in_minutes > Time_range_valid_peak_Selected_Detectors(detectorr,1)) & (time_in_minutes < Time_range_valid_peak_Selected_Detectors(detectorr,2)));
+    plot(tR_valid,Data_valid,'color',Color_in_letter(detectorr));
+    hold on;
+
+    Data_valid_baseline_corrected = Data_valid - min(Data_valid);
+    interval_tR = range(tR_valid)/size(tR_valid,1);
+    Area_data = sum(Data_valid_baseline_corrected)*interval_tR;
+    
+    Area_Selected_Detectors(1,detectorr) = Area_data;
+end;
+legend(Detectors_want_to_plot_modified_names);
+saveas(h_figure,[filename(1:length(filename)-4),'valid'],'pdf');
+close all;
+end;
+
+
+save Area_Selected_Detectors.dat Area_Selected_Detectors -ascii -tabs;
+
+
+

@@ -1,0 +1,120 @@
+[Method]
+[General]
+Identifier: 	Carrier1mMNaCl pH7 08122013
+SEC_Run: 	0
+ChOutFlow:  	0.7
+SlotFlow:   	0
+EndTime:    	3
+Spacer:     	350
+[Injection]
+InjectFlow: 	0
+InjectXFlow:	0
+InjectTime:	0
+Transtime:  	0
+[Elution]
+Rowanz:     	1
+Row:          	1
+Time 0:       	0
+Time 1:       	3
+Flow 0:       	0
+Flow 1:       	0
+Typ:          	1
+Exp:          	0
+[Rinsing]
+RinseTime:     	5
+RinseTipFlow:  	1
+RinseFocusFlow:	0
+RinseSlotFlow: 	0
+RinseValve: 	1
+[End Method]
+[Rundata]
+Runnumber:  	1
+User:       	postnova analytics
+Viscosity:  	0.0088
+RefIndex:   	1.33
+Solvent:    	NaCl_15mM
+Vial:       	0
+InjectVol:  	1000
+Conc:       	650
+dndc:       	0.165
+Extinction: 	0.152
+Sample:     	Tube Time_PSS_1point6kDa_800mgL_15mM_10082014
+Description:	Tube Time_PSS_1point6kDa_800mgL_15mM_10082014
+sample volume 1ml
+UV1 at 254nm aux range 1
+UV2 at 280nm range 0.001
+Fluorescence 1 Ex/Em 350/450
+sensitivity 2 gain 2 mode 1 range 1
+Fluorescence 2 Ex/Em 350/450 
+sensitivity 2 gain 2 mode 1 range 1
+membran: 300Da PES(polyetherfulfone)
+sample volume 20uL
+carrier solution NaCl_15mM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[End String]
+CycleAnz:   	2
+WhenInject: 	0
+ProjectDir: 	C:\AF2000 Data\20140910
+RunID:      	Tube Time_PSS_1point6kDa_800mgL_15mM_10082014
+[End Run]

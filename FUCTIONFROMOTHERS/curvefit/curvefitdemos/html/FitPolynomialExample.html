@@ -1,0 +1,341 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Polynomial Curve Fitting</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-01-12"><meta name="DC.source" content="FitPolynomialExample.m"><link rel="stylesheet" type="text/css" href="../../../matlab/helptools/private/style.css"></head><body><div class="header"><div class="left"><a href="matlab:edit FitPolynomialExample">Open FitPolynomialExample.m in the Editor</a></div><div class="right"><a href="matlab:echodemo FitPolynomialExample">Run in the Command Window</a></div></div><div class="content"><h1>Polynomial Curve Fitting</h1><!--introduction--><p>This example shows how to fit polynomials up to sixth degree to some census data using Curve Fitting Toolbox&#8482;. It also shows how to fit a single-term exponential equation and compare this to the polynomial models.</p><p>The steps show how to:</p><div><ul><li>Load data and create fits using different library models.</li><li>Search for the best fit by comparing graphical fit results, and by comparing numerical fit results including the fitted coefficients and goodness of fit statistics.</li></ul></div><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Load and Plot the Data</a></li><li><a href="#3">Create and Plot a Quadratic</a></li><li><a href="#5">Create and Plot a Selection of Polynomials</a></li><li><a href="#8">Plot the Residuals to Evaluate the Fit</a></li><li><a href="#11">Examine Fits Beyond the Data Range</a></li><li><a href="#13">Plot Prediction Intervals</a></li><li><a href="#15">Examine Goodness-of-Fit Statistics</a></li><li><a href="#17">Compare the Coefficients and Confidence Bounds to Determine the Best Fit</a></li><li><a href="#21">Evaluate the Best Fit at New Query Points</a></li></ul></div><h2>Load and Plot the Data<a name="1"></a></h2><p>The data for this example is the file <tt>census.mat</tt></p><pre class="codeinput">load <span class="string">census</span>
+</pre><p>The workspace contains two new variables:</p><div><ul><li><tt>cdate</tt> is a column vector containing the years 1790 to 1990 in 10-year increments.</li><li><tt>pop</tt> is a column vector with the U.S. population figures that correspond to the years in <tt>cdate</tt> .</li></ul></div><pre class="codeinput">whos <span class="string">cdate</span> <span class="string">pop</span>
+plot( cdate, pop, <span class="string">'o'</span> )
+</pre><pre class="codeoutput">  Name        Size            Bytes  Class     Attributes
+
+  cdate      21x1               168  double              
+  pop        21x1               168  double              
+
+</pre><img vspace="5" hspace="5" src="FitPolynomialExample_01.png" alt=""> <h2>Create and Plot a Quadratic<a name="3"></a></h2><p>Use the <tt>fit</tt> function to fit a a polynomial to data. You specify a quadratic, or second-degree polynomial, with the string <tt>'poly2'</tt>. The first output from <tt>fit</tt> is the polynomial, and the second output, <tt>gof</tt>, contains the goodness of fit statistics you will examine in a later step.</p><pre class="codeinput">[population2, gof] = fit( cdate, pop,  <span class="string">'poly2'</span> );
+</pre><p>To plot the fit, use the <tt>plot</tt> method.</p><pre class="codeinput">plot( population2, cdate, pop );
+<span class="comment">% Move the legend to the top left corner.</span>
+legend( <span class="string">'Location'</span>, <span class="string">'NorthWest'</span> );
+</pre><img vspace="5" hspace="5" src="FitPolynomialExample_02.png" alt=""> <h2>Create and Plot a Selection of Polynomials<a name="5"></a></h2><p>To fit polynomials of different degrees, change the fittype string, e.g., for a cubic or third-degree polynomial use <tt>'poly3'</tt>. The scale of the input, <tt>cdate</tt>, is quite large, so you can obtain better results by centering and scaling the data. To do this, use the <tt>'Normalize'</tt> option.</p><pre class="codeinput">population3 = fit( cdate, pop, <span class="string">'poly3'</span>, <span class="string">'Normalize'</span>, <span class="string">'on'</span> );
+population4 = fit( cdate, pop, <span class="string">'poly4'</span>, <span class="string">'Normalize'</span>, <span class="string">'on'</span> );
+population5 = fit( cdate, pop, <span class="string">'poly5'</span>, <span class="string">'Normalize'</span>, <span class="string">'on'</span> );
+population6 = fit( cdate, pop, <span class="string">'poly6'</span>, <span class="string">'Normalize'</span>, <span class="string">'on'</span> );
+</pre><p>A simple model for population growth tells us that an exponential equation should fit this census data well. To fit a single term exponential model, use <tt>'exp1'</tt> as the fittype.</p><pre class="codeinput">populationExp = fit( cdate, pop,  <span class="string">'exp1'</span> );
+</pre><p>Plot all the fits at once, and add a meaningful legend in the top left corner of the plot.</p><pre class="codeinput">hold <span class="string">on</span>
+plot( population3, <span class="string">'b'</span> );
+plot( population4, <span class="string">'g'</span> );
+plot( population5, <span class="string">'m'</span> );
+plot( population6, <span class="string">'b--'</span> );
+plot( populationExp, <span class="string">'r--'</span> );
+hold <span class="string">off</span>
+legend( <span class="string">'cdate v pop'</span>, <span class="string">'poly2'</span>, <span class="string">'poly3'</span>, <span class="string">'poly4'</span>, <span class="string">'poly5'</span>, <span class="string">'poly6'</span>, <span class="string">'exp1'</span>, <span class="keyword">...</span>
+    <span class="string">'Location'</span>, <span class="string">'NorthWest'</span> );
+</pre><img vspace="5" hspace="5" src="FitPolynomialExample_03.png" alt=""> <h2>Plot the Residuals to Evaluate the Fit<a name="8"></a></h2><p>To plot residuals, specify <tt>'residuals'</tt> as the plot type in the <tt>plot</tt> method.</p><pre class="codeinput">plot( population2, cdate, pop, <span class="string">'residuals'</span> );
+</pre><img vspace="5" hspace="5" src="FitPolynomialExample_04.png" alt=""> <p>The fits and residuals for the polynomial equations are all similar, making it difficult to choose the best one.</p><p>If the residuals display a systematic pattern, it is a clear sign that the model fits the data poorly.</p><pre class="codeinput">plot( populationExp, cdate, pop, <span class="string">'residuals'</span> );
+</pre><img vspace="5" hspace="5" src="FitPolynomialExample_05.png" alt=""> <p>The fit and residuals for the single-term exponential equation indicate it is a poor fit overall. Therefore, it is a poor choice and you can remove the exponential fit from the candidates for best fit.</p><h2>Examine Fits Beyond the Data Range<a name="11"></a></h2><p>Examine the behavior of the fits up to the year 2050. The goal of fitting the census data is to extrapolate the best fit to predict future population values.</p><p>By default, the fit is plotted over the range of the data. To plot a fit over a different range, set the x-limits of the axes before plotting the fit. For example, to see values extrapolated from the fit, set the upper x-limit to 2050.</p><pre class="codeinput">plot( cdate, pop, <span class="string">'o'</span> );
+xlim( [1900, 2050] );
+hold <span class="string">on</span>
+plot( population6 );
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="FitPolynomialExample_06.png" alt=""> <p>Examine the plot. The behavior of the sixth-degree polynomial fit beyond the data range makes it a poor choice for extrapolation and you can reject this fit.</p><h2>Plot Prediction Intervals<a name="13"></a></h2><p>To plot prediction intervals, use <tt>'predobs'</tt> or <tt>'predfun'</tt> as the plot type. For example, to see the prediction bounds for the fifth-degree polynomial for a new observation up to year 2050:</p><pre class="codeinput">plot( cdate, pop, <span class="string">'o'</span> );
+xlim( [1900, 2050] )
+hold <span class="string">on</span>
+plot( population5, <span class="string">'predobs'</span> );
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="FitPolynomialExample_07.png" alt=""> <p>Plot prediction intervals for the cubic polynomial up to year 2050:</p><pre class="codeinput">plot( cdate, pop, <span class="string">'o'</span> );
+xlim( [1900, 2050] )
+hold <span class="string">on</span>
+plot( population3, <span class="string">'predobs'</span> )
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="FitPolynomialExample_08.png" alt=""> <h2>Examine Goodness-of-Fit Statistics<a name="15"></a></h2><p>The struct <tt>gof</tt> shows the goodness-of-fit statistics for the <tt>'poly2'</tt> fit. When you created the <tt>'poly2'</tt> fit with the <tt>fit</tt> function in an earlier step, you specified the <tt>gof</tt> output argument.</p><pre class="codeinput">gof
+</pre><pre class="codeoutput">
+gof = 
+
+           sse: 159.0293
+       rsquare: 0.9987
+           dfe: 18
+    adjrsquare: 0.9986
+          rmse: 2.9724
+
+</pre><p>Examine the sum of squares due to error (SSE) and the adjusted R-square statistics to help determine the best fit. The SSE statistic is the least-squares error of the fit, with a value closer to zero indicating a better fit. The adjusted R-square statistic is generally the best indicator of the fit quality when you add additional coefficients to your model.</p><p>The large SSE for <tt>'exp1'</tt> indicates it is a poor fit, which you already determined by examining the fit and residuals. The lowest SSE value is associated with <tt>'poly6'</tt>. However, the behavior of this fit beyond the data range makes it a poor choice for extrapolation, so you already rejected this fit by examining the plots with new axis limits.</p><p>The next best SSE value is associated with the fifth-degree polynomial fit, <tt>'poly5'</tt>, suggesting it might be the best fit. However, the SSE and adjusted R-square values for the remaining polynomial fits are all very close to each other. Which one should you choose?</p><h2>Compare the Coefficients and Confidence Bounds to Determine the Best Fit<a name="17"></a></h2><p>Resolve the best fit issue by examining the coefficients and confidence bounds for the remaining fits: the fifth-degree polynomial and the quadratic.</p><p>Examine <tt>population2</tt> and <tt>population5</tt> by displaying the models, the fitted coefficients, and the confidence bounds for the fitted coefficients:</p><pre class="codeinput">population2
+</pre><pre class="codeoutput">
+population2 = 
+
+     Linear model Poly2:
+     population2(x) = p1*x^2 + p2*x + p3
+     Coefficients (with 95% confidence bounds):
+       p1 =    0.006541  (0.006124, 0.006958)
+       p2 =      -23.51  (-25.09, -21.93)
+       p3 =   2.113e+04  (1.964e+04, 2.262e+04)
+</pre><pre class="codeinput">population5
+</pre><pre class="codeoutput">
+population5 = 
+
+     Linear model Poly5:
+     population5(x) = p1*x^5 + p2*x^4 + p3*x^3 + p4*x^2 + p5*x + p6
+       where x is normalized by mean 1890 and std 62.05
+     Coefficients (with 95% confidence bounds):
+       p1 =      0.5877  (-2.305, 3.48)
+       p2 =      0.7047  (-1.684, 3.094)
+       p3 =     -0.9193  (-10.19, 8.356)
+       p4 =       23.47  (17.42, 29.52)
+       p5 =       74.97  (68.37, 81.57)
+       p6 =       62.23  (59.51, 64.95)
+</pre><p>You can also get the confidence intervals by using <tt>confint</tt> :</p><pre class="codeinput">ci = confint( population5 )
+</pre><pre class="codeoutput">
+ci =
+
+   -2.3046   -1.6841  -10.1943   17.4213   68.3655   59.5102
+    3.4801    3.0936    8.3558   29.5199   81.5696   64.9469
+
+</pre><p>The confidence bounds on the coefficients determine their accuracy. Check the fit equations (e.g. <tt>f(x)=p1*x+p2*x...</tt> ) to see the model terms for each coefficient. Note that <tt>p2</tt> refers to the <tt>p2*x</tt> term in <tt>'poly2'</tt> and the <tt>p2*x^4</tt> term in <tt>'poly5'</tt>. Do not compare normalized coefficients directly with non-normalized coefficients.</p><p>The bounds cross zero on the <tt>p1</tt>, <tt>p2</tt>, and <tt>p3</tt> coefficients for the fifth-degree polynomial. This means you cannot be sure that these coefficients differ from zero. If the higher order model terms may have coefficients of zero, they are not helping with the fit, which suggests that this model over fits the census data.</p><p>The fitted coefficients associated with the constant, linear, and quadratic terms are nearly identical for each normalized polynomial equation. However, as the polynomial degree increases, the coefficient bounds associated with the higher degree terms cross zero, which suggests over fitting.</p><p>However, the small confidence bounds do not cross zero on <tt>p1</tt>, <tt>p2</tt>, and <tt>p3</tt> for the quadratic fit, indicating that the fitted coefficients are known fairly accurately.</p><p>Therefore, after examining both the graphical and numerical fit results, you should select the quadratic <tt>population2</tt> as the best fit to extrapolate the census data.</p><h2>Evaluate the Best Fit at New Query Points<a name="21"></a></h2><p>Now you have selected the best fit, <tt>population2</tt>, for extrapolating this census data, evaluate the fit for some new query points:</p><pre class="codeinput">cdateFuture = (2000:10:2020).';
+popFuture = population2( cdateFuture )
+</pre><pre class="codeoutput">
+popFuture =
+
+  274.6221
+  301.8240
+  330.3341
+
+</pre><p>To compute 95% confidence bounds on the prediction for the population in the future, use the <tt>predint</tt> method:</p><pre class="codeinput">ci = predint( population2, cdateFuture, 0.95, <span class="string">'observation'</span> )
+</pre><pre class="codeoutput">
+ci =
+
+  266.9185  282.3257
+  293.5673  310.0807
+  321.3979  339.2702
+
+</pre><p>Plot the predicted future population, with confidence intervals, against the fit and data.</p><pre class="codeinput">plot( cdate, pop, <span class="string">'o'</span> );
+xlim( [1900, 2040] )
+hold <span class="string">on</span>
+plot( population2 )
+h = errorbar( cdateFuture, popFuture, popFuture-ci(:,1), ci(:,2)-popFuture, <span class="string">'.'</span> );
+hold <span class="string">off</span>
+legend( <span class="string">'cdate v pop'</span>, <span class="string">'poly2'</span>, <span class="string">'prediction'</span>, <span class="keyword">...</span>
+    <span class="string">'Location'</span>, <span class="string">'NorthWest'</span> )
+</pre><img vspace="5" hspace="5" src="FitPolynomialExample_09.png" alt=""> <p class="footer">Copyright 2012 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br><br>
+		  MATLAB and Simulink are registered trademarks of The MathWorks, Inc.  Please see <a href="http://www.mathworks.com/trademarks">www.mathworks.com/trademarks</a> for a list of other trademarks owned by The MathWorks, Inc.  Other product or brand names are trademarks or registered trademarks of their respective owners.
+      </p></div><!--
+##### SOURCE BEGIN #####
+%% Polynomial Curve Fitting
+%
+% This example shows how to fit polynomials up to sixth degree to some census
+% data using Curve Fitting Toolbox(TM). It also shows how to fit a single-term
+% exponential equation and compare this to the polynomial models.
+%
+% The steps show how to:
+%
+% * Load data and create fits using different library models.
+% * Search for the best fit by comparing graphical fit results, and by comparing
+% numerical fit results including the fitted coefficients and goodness of fit
+% statistics.
+
+%   Copyright 2012 The MathWorks, Inc.
+%   $Revision: 1.1.8.2 $
+
+%% Load and Plot the Data
+%
+% The data for this example is the file |census.mat|
+load census
+%%
+% The workspace contains two new variables:
+%
+% * |cdate| is a column vector containing the years 1790 to 1990 in 10-year
+% increments.
+% * |pop| is a column vector with the U.S. population figures that correspond to
+% the years in |cdate| .
+whos cdate pop
+plot( cdate, pop, 'o' )
+
+%% Create and Plot a Quadratic
+%
+% Use the |fit| function to fit a a polynomial to data. You specify a
+% quadratic, or second-degree polynomial, with the string |'poly2'|.
+% The first output from |fit| is the polynomial, and the second output,
+% |gof|, contains the goodness of fit statistics you will examine in a
+% later step.
+[population2, gof] = fit( cdate, pop,  'poly2' );
+%%
+% To plot the fit, use the |plot| method.
+plot( population2, cdate, pop );
+% Move the legend to the top left corner.
+legend( 'Location', 'NorthWest' );
+
+%% Create and Plot a Selection of Polynomials
+%
+% To fit polynomials of different degrees, change the fittype string, e.g., for a
+% cubic or third-degree polynomial use |'poly3'|. The scale of the input,
+% |cdate|, is quite large, so you can obtain better results by centering and
+% scaling the data. To do this, use the |'Normalize'| option.
+population3 = fit( cdate, pop, 'poly3', 'Normalize', 'on' );
+population4 = fit( cdate, pop, 'poly4', 'Normalize', 'on' );
+population5 = fit( cdate, pop, 'poly5', 'Normalize', 'on' );
+population6 = fit( cdate, pop, 'poly6', 'Normalize', 'on' );
+%%
+% A simple model for population growth tells us that an exponential
+% equation should fit this census data well. To fit a single term
+% exponential model, use |'exp1'| as the fittype.
+populationExp = fit( cdate, pop,  'exp1' );
+%%
+% Plot all the fits at once, and add a meaningful legend in the top left
+% corner of the plot.
+hold on
+plot( population3, 'b' );
+plot( population4, 'g' );
+plot( population5, 'm' );
+plot( population6, 'bREPLACE_WITH_DASH_DASH' );
+plot( populationExp, 'rREPLACE_WITH_DASH_DASH' );
+hold off
+legend( 'cdate v pop', 'poly2', 'poly3', 'poly4', 'poly5', 'poly6', 'exp1', ...
+    'Location', 'NorthWest' );
+
+%% Plot the Residuals to Evaluate the Fit
+%
+% To plot residuals, specify |'residuals'| as the plot type in the |plot|
+% method.
+plot( population2, cdate, pop, 'residuals' );
+%%
+% The fits and residuals for the polynomial equations are all similar,
+% making it difficult to choose the best one.
+%
+% If the residuals display a systematic pattern, it is a clear sign that
+% the model fits the data poorly.
+plot( populationExp, cdate, pop, 'residuals' );
+%%
+% The fit and residuals for the single-term exponential equation indicate
+% it is a poor fit overall. Therefore, it is a poor choice and you can
+% remove the exponential fit from the candidates for best fit.
+
+%% Examine Fits Beyond the Data Range
+%
+% Examine the behavior of the fits up to the year 2050. The goal of fitting
+% the census data is to extrapolate the best fit to predict future
+% population values.
+%
+% By default, the fit is plotted over the range of the data. To plot a fit
+% over a different range, set the x-limits of the axes before plotting the
+% fit. For example, to see values extrapolated from the fit, set the upper
+% x-limit to 2050.
+plot( cdate, pop, 'o' );
+xlim( [1900, 2050] );
+hold on
+plot( population6 );
+hold off
+%%
+% Examine the plot. The behavior of the sixth-degree polynomial fit beyond
+% the data range makes it a poor choice for extrapolation and you can
+% reject this fit.
+
+%% Plot Prediction Intervals
+%
+% To plot prediction intervals, use |'predobs'| or |'predfun'| as the plot
+% type. For example, to see the prediction bounds for the fifth-degree
+% polynomial for a new observation up to year 2050:
+plot( cdate, pop, 'o' );
+xlim( [1900, 2050] )
+hold on
+plot( population5, 'predobs' );
+hold off
+
+%%
+% Plot prediction intervals for the cubic polynomial up to year 2050:
+plot( cdate, pop, 'o' );
+xlim( [1900, 2050] )
+hold on
+plot( population3, 'predobs' )
+hold off
+
+%% Examine Goodness-of-Fit Statistics
+% The struct |gof| shows the goodness-of-fit statistics for the |'poly2'|
+% fit. When you created the |'poly2'| fit with the |fit| function in an earlier
+% step, you specified the |gof| output argument.
+gof
+%%
+% Examine the sum of squares due to error (SSE) and the adjusted R-square
+% statistics to help determine the best fit. The SSE statistic is the
+% least-squares error of the fit, with a value closer to zero indicating a
+% better fit. The adjusted R-square statistic is generally the best
+% indicator of the fit quality when you add additional coefficients to your
+% model.
+%
+% The large SSE for |'exp1'| indicates it is a poor fit, which you already
+% determined by examining the fit and residuals. The lowest SSE value is
+% associated with |'poly6'|. However, the behavior of this fit beyond the data
+% range makes it a poor choice for extrapolation, so you already rejected
+% this fit by examining the plots with new axis limits.
+%
+% The next best SSE value is associated with the fifth-degree polynomial
+% fit, |'poly5'|, suggesting it might be the best fit. However, the SSE and
+% adjusted R-square values for the remaining polynomial fits are all very
+% close to each other. Which one should you choose?
+
+%% Compare the Coefficients and Confidence Bounds to Determine the Best Fit
+%
+% Resolve the best fit issue by examining the coefficients and confidence
+% bounds for the remaining fits: the fifth-degree polynomial and the
+% quadratic.
+%
+% Examine |population2| and |population5| by displaying the models, the fitted coefficients,
+% and the confidence bounds for the fitted coefficients:
+population2
+%%
+population5
+%%
+% You can also get the confidence intervals by using |confint| :
+ci = confint( population5 )
+%%
+% The confidence bounds on the coefficients determine their accuracy. Check
+% the fit equations (e.g. |f(x)=p1*x+p2*x...| ) to see the model terms for
+% each coefficient. Note that |p2| refers to the |p2*x| term in |'poly2'| and the
+% |p2*x^4| term in |'poly5'|. Do not compare normalized coefficients directly
+% with non-normalized coefficients.
+%
+% The bounds cross zero on the |p1|, |p2|, and |p3| coefficients for the
+% fifth-degree polynomial. This means you cannot be sure that these
+% coefficients differ from zero. If the higher order model terms may have
+% coefficients of zero, they are not helping with the fit, which suggests
+% that this model over fits the census data.
+%
+% The fitted coefficients associated with the constant, linear, and
+% quadratic terms are nearly identical for each normalized polynomial
+% equation. However, as the polynomial degree increases, the coefficient
+% bounds associated with the higher degree terms cross zero, which
+% suggests over fitting.
+%
+% However, the small confidence bounds do not cross zero on |p1|, |p2|, and
+% |p3| for the quadratic fit, indicating that the fitted coefficients are
+% known fairly accurately.
+%
+% Therefore, after examining both the graphical and numerical fit results,
+% you should select the quadratic |population2| as the best fit to extrapolate the
+% census data.
+
+%% Evaluate the Best Fit at New Query Points
+%
+% Now you have selected the best fit, |population2|, for extrapolating this census data,
+% evaluate the fit for some new query points:
+cdateFuture = (2000:10:2020).';
+popFuture = population2( cdateFuture )
+%%
+% To compute 95% confidence bounds on the prediction for the population in the
+% future, use the |predint| method:
+ci = predint( population2, cdateFuture, 0.95, 'observation' )
+%%
+% Plot the predicted future population, with confidence intervals, against the
+% fit and data.
+plot( cdate, pop, 'o' );
+xlim( [1900, 2040] )
+hold on
+plot( population2 )
+h = errorbar( cdateFuture, popFuture, popFuture-ci(:,1), ci(:,2)-popFuture, '.' );
+hold off
+legend( 'cdate v pop', 'poly2', 'prediction', ...
+    'Location', 'NorthWest' )
+
+
+displayEndOfDemoMessage(mfilename)
+
+##### SOURCE END #####
+--></body></html>

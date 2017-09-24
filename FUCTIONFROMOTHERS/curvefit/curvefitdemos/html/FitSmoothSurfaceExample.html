@@ -1,0 +1,345 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Fit Smooth Surfaces To Investigate Fuel Efficiency</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-01-12"><meta name="DC.source" content="FitSmoothSurfaceExample.m"><link rel="stylesheet" type="text/css" href="../../../matlab/helptools/private/style.css"></head><body><div class="header"><div class="left"><a href="matlab:edit FitSmoothSurfaceExample">Open FitSmoothSurfaceExample.m in the Editor</a></div><div class="right"><a href="matlab:echodemo FitSmoothSurfaceExample">Run in the Command Window</a></div></div><div class="content"><h1>Fit Smooth Surfaces To Investigate Fuel Efficiency</h1><!--introduction--><p>This example shows how to use Curve Fitting Toolbox&#8482; to fit a response surface to some automotive data to investigate fuel efficiency.</p><p>The toolbox provides sample data generated from a GTPOWER predictive combustion engine model. The model emulates a naturally aspirated spark-ignition, 2-liter, inline 4-cylinder engine. You can fit smooth lowess surfaces to this data to find minimum fuel consumption.</p><p>The data set includes the required variables to model response surfaces:</p><div><ul><li>Speed is in revolutions per minute (rpm) units.</li><li>Load is the normalized cylinder air mass (the ratio of cylinder aircharge to maximum naturally aspirated cylinder aircharge at standard temperature and pressure).</li><li>BSFC is the brake-specific fuel consumption in g/KWh. That is, the energy flow in, divided by mechanical power out (fuel efficiency).</li></ul></div><p>The aim is to model a response surface to find the minimum BSFC as a function of speed and load. You can use this surface as a table, included as part of a hybrid vehicle optimization algorithm combining the use of a motor and your engine. To operate the engine as fuel efficiently as possible, the table must operate the engine near the bottom of the BSFC bowl.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Load and Preprocess Data</a></li><li><a href="#5">Fit a Surface</a></li><li><a href="#6">Plot Fit</a></li><li><a href="#7">Remove Problem Points</a></li><li><a href="#9">Zoom In</a></li><li><a href="#11">Create a Table from the Surface</a></li><li><a href="#14">Plot the Table Against the Original Model</a></li><li><a href="#15">Check the Table Accuracy</a></li><li><a href="#16">Create a Table Array Including Breakpoint Values</a></li><li><a href="#17">Export Table to Spreadsheet File</a></li><li><a href="#18">Create a Lookup Table Block</a></li></ul></div><h2>Load and Preprocess Data<a name="1"></a></h2><p>Load the data from the XLS spreadsheet. Use the <tt>'basic'</tt> command option for non-Windows&reg; platforms.</p><p>Create a variable <tt>n</tt> that has all the numeric data in one array.</p><pre class="codeinput">n = xlsread( <span class="string">'Engine_Data_SI_NA_2L_I4.xls'</span>, <span class="string">'SI NA 2L I4'</span>, <span class="string">''</span>, <span class="string">'basic'</span> );
+</pre><p>Extract from the variable <tt>n</tt> the columns of interest.</p><pre class="codeinput">SPEED = n(:,2);
+LOAD_CMD = n(:,3);
+LOAD = n(:,8);
+BSFC = n(:,22);
+</pre><p>Process the data before fitting, to pick out the minimum BSFC values from each sweep. The data points are organized in sweeps on speed/load.</p><p>Get a list of the speed/load sites:</p><pre class="codeinput">SL = unique( [SPEED, LOAD_CMD], <span class="string">'rows'</span> );
+nRuns = size( SL, 1 );
+</pre><p>For each speed/load site, find the data at the site and extract the actual measured load and the minimum BSFC.</p><pre class="codeinput">minBSFC  = zeros( nRuns, 1 );
+Load     = zeros( nRuns, 1 );
+Speed    = zeros( nRuns, 1 );
+<span class="keyword">for</span> i = 1:nRuns
+    idx = SPEED == SL(i,1) &amp; LOAD_CMD == SL(i,2);
+
+    minBSFC(i) = min(  BSFC(idx) );
+    Load(i)    = mean( LOAD(idx) );
+    Speed(i)   = mean( SPEED(idx) );
+<span class="keyword">end</span>
+</pre><h2>Fit a Surface<a name="5"></a></h2><p>Fit a surface of fuel efficiency to the preprocessed data.</p><pre class="codeinput">f1 = fit( [Speed, Load], minBSFC, <span class="string">'Lowess'</span>, <span class="string">'Normalize'</span>, <span class="string">'on'</span> )
+</pre><pre class="codeoutput">
+     Locally weighted smoothing linear regression:
+       f1(x,y) = lowess (linear) smoothing regression computed from p
+       where x is normalized by mean 3407 and std 1214
+       and where y is normalized by mean 0.5173 and std 0.1766
+     Coefficients:
+       p = coefficient structure
+
+</pre><h2>Plot Fit<a name="6"></a></h2><pre class="codeinput">plot( f1, [Speed, Load], minBSFC );
+xlabel( <span class="string">'Speed [RPM]'</span> );
+ylabel( <span class="string">'Load [%]'</span> );
+zlabel( <span class="string">'Minimum BSFC [g/Kwh]'</span> );
+</pre><img vspace="5" hspace="5" src="FitSmoothSurfaceExample_01.png" alt=""> <h2>Remove Problem Points<a name="7"></a></h2><p>Review the resulting plot.</p><p>There are points where BSFC is negative because this data is generated by an engine simulation.</p><p>Remove those problem data points by keeping points in the range [0, Inf].</p><pre class="codeinput">out = excludedata( Speed, minBSFC, <span class="string">'Range'</span>, [0, Inf] );
+f2 = fit( [Speed, Load], minBSFC, <span class="string">'Lowess'</span>, <span class="keyword">...</span>
+    <span class="string">'Normalize'</span>, <span class="string">'on'</span>, <span class="string">'Exclude'</span>, out )
+</pre><pre class="codeoutput">
+     Locally weighted smoothing linear regression:
+       f2(x,y) = lowess (linear) smoothing regression computed from p
+       where x is normalized by mean 3443 and std 1187
+       and where y is normalized by mean 0.521 and std 0.175
+     Coefficients:
+       p = coefficient structure
+
+</pre><p>Plot the new fit. Note that the excluded points are plotted as red crosses.</p><pre class="codeinput">plot( f2, [Speed, Load], minBSFC, <span class="string">'Exclude'</span>, out );
+xlabel( <span class="string">'Speed [RPM]'</span> );
+ylabel( <span class="string">'Load [%]'</span> );
+zlabel( <span class="string">'Minimum BSFC [g/Kwh]'</span> );
+</pre><img vspace="5" hspace="5" src="FitSmoothSurfaceExample_02.png" alt=""> <h2>Zoom In<a name="9"></a></h2><p>Zoom in on the part of the z-axis of interest.</p><pre class="codeinput">set( gca, <span class="string">'ZLim'</span>, [0, max( minBSFC )] );
+</pre><img vspace="5" hspace="5" src="FitSmoothSurfaceExample_03.png" alt=""> <p>You want to operate the engine efficiently, so create a contour plot to see the region where the BSFC is low. Use the plot function, and specify the name/value parameter pair <tt>'style','Contour'</tt>.</p><pre class="codeinput">plot( f2, [Speed, Load], minBSFC, <span class="string">'Exclude'</span>, out, <span class="string">'Style'</span>, <span class="string">'Contour'</span> );
+xlabel( <span class="string">'Speed [RPM]'</span> );
+ylabel( <span class="string">'Load [%]'</span> );
+colorbar
+</pre><img vspace="5" hspace="5" src="FitSmoothSurfaceExample_04.png" alt=""> <h2>Create a Table from the Surface<a name="11"></a></h2><p>Generate a table by evaluating the model <tt>f2</tt> over a grid of points.</p><p>Create variables for the table breakpoints.</p><pre class="codeinput">speedbreakpoints = linspace( 1000, 5500, 17 );
+loadbreakpoints =  linspace( 0.2, 0.8, 13 );
+</pre><p>To generate values for the table, evaluate the model over a grid of points.</p><pre class="codeinput">[tSpeed, tLoad] = meshgrid( speedbreakpoints, loadbreakpoints );
+tBSFC = f2( tSpeed, tLoad );
+</pre><p>Examine the rows and columns of the table at the command line.</p><pre class="codeinput">tBSFC(1:2:end,1:2:end)
+</pre><pre class="codeoutput">
+ans =
+
+  Columns 1 through 7
+
+  722.3280  766.7608  779.4296  757.4574  694.5378  624.4095  576.5235
+  503.9880  499.9201  481.7240  458.2803  427.7338  422.1099  412.1624
+  394.7579  364.3421  336.1811  330.1550  329.1635  328.1810  329.1144
+  333.7740  307.7736  295.1777  291.2068  290.3637  290.0173  287.8672
+  295.9729  282.7567  273.8287  270.8869  269.8485  271.0547  270.5502
+  273.7512  264.5167  259.7631  257.9215  256.9350  258.3228  258.6638
+  251.5652  247.6746  247.2747  247.4699  247.3570  248.2433  248.8139
+
+  Columns 8 through 9
+
+  532.1533  466.9610
+  396.3209  398.0199
+  335.3871  346.3882
+  286.3077  291.0075
+  269.6837  272.2054
+  258.0298  260.5269
+  249.0083  250.4165
+
+</pre><h2>Plot the Table Against the Original Model<a name="14"></a></h2><p>The grid on the model surface shows the table breakpoints.</p><pre class="codeinput">h = plot( f2 );
+set( h, <span class="string">'EdgeColor'</span>, <span class="string">'none'</span> );
+hold <span class="string">on</span>
+mesh( tSpeed, tLoad, tBSFC, <span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>, <span class="string">'-'</span>, <span class="string">'LineWidth'</span>, 2, <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+    <span class="string">'FaceColor'</span>, <span class="string">'none'</span>, <span class="string">'FaceAlpha'</span>, 1 );
+hold <span class="string">off</span>
+xlabel( <span class="string">'Speed [RPM]'</span> );
+ylabel( <span class="string">'Load [%]'</span> );
+zlabel( <span class="string">'Minimum BSFC [g/Kwh]'</span> );
+</pre><img vspace="5" hspace="5" src="FitSmoothSurfaceExample_05.png" alt=""> <h2>Check the Table Accuracy<a name="15"></a></h2><p>View the difference between the model and the table by plotting the difference between them on a finer grid. Then, use this difference in prediction accuracy between the table and the model to determine the most efficient table size for your accuracy requirements.</p><p>The following code evaluates the model over a finer grid and plots the difference between the model and the table.</p><pre class="codeinput">[tfSpeed, tfLoad] = meshgrid( <span class="keyword">...</span>
+    linspace( 1000, 5500, 8*17+1 ), <span class="keyword">...</span>
+    linspace( 0.2, 0.8, 8*13+1 ) );
+tfBSFC_model = f2( tfSpeed, tfLoad );
+tfBSFC_table = interp2( tSpeed, tLoad, tBSFC, tfSpeed, tfLoad, <span class="string">'linear'</span> );
+tfDiff = tfBSFC_model - tfBSFC_table;
+
+surf( tfSpeed, tfLoad, tfDiff, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>  );
+hold <span class="string">on</span>
+mesh( tSpeed, tLoad, zeros( size( tBSFC ) ), <span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>, <span class="string">'-'</span>, <span class="string">'LineWidth'</span>, 2, <span class="string">'EdgeColor'</span>, <span class="string">'k'</span>, <span class="keyword">...</span>
+    <span class="string">'FaceColor'</span>, <span class="string">'none'</span>, <span class="string">'FaceAlpha'</span>, 1 );
+hold <span class="string">off</span>
+axis <span class="string">tight</span>
+xlabel( <span class="string">'Speed [RPM]'</span> );
+ylabel( <span class="string">'Load [%]'</span> );
+zlabel( <span class="string">'Difference between model and table [g/Kwh]'</span> );
+title( sprintf( <span class="string">'Max difference: %g'</span>, max( abs( tfDiff(:) ) ) ) );
+</pre><img vspace="5" hspace="5" src="FitSmoothSurfaceExample_06.png" alt=""> <h2>Create a Table Array Including Breakpoint Values<a name="16"></a></h2><p>After creating a table by evaluating a model fit over a grid of points, it can be useful to export your table data from MATLAB. Before exporting, create a table array that includes the breakpoint values in the first row and column. The following command reshapes your data to this table format:</p><div><ul><li>X (<tt>speedbreakpoints</tt>) is  a (1 x M) vector</li><li>Y (<tt>loadbreakpoints</tt>) is an (N x 1) vector</li><li>Z (<tt>tBSFC</tt>) is an (M x N) matrix</li></ul></div><pre class="codeinput">table = [
+    {<span class="string">'Load\Speed'</span>}, num2cell(speedbreakpoints(:).' )
+    num2cell(loadbreakpoints (:) ), num2cell( tBSFC )
+    ];
+</pre><h2>Export Table to Spreadsheet File<a name="17"></a></h2><p>You can use the <tt>xlswrite</tt> function to export your table data to a new Excel Spreadsheet.  Execute the following command to create a spreadsheet file.</p><pre class="language-matlab">xlswrite( <span class="string">'tabledata.xlsx'</span>, table )
+</pre><h2>Create a Lookup Table Block<a name="18"></a></h2><p>If you have Simulink&#8482; software, you can create a Look Up Table block as follows. Execute the following code to try it out.</p><p>1. Create a model with a 2-D Lookup Table block.</p><pre class="language-matlab">simulink
+new_system( <span class="string">'my_model'</span> )
+open_system( <span class="string">'my_model'</span> )
+add_block( <span class="string">'Simulink/Lookup Tables/2-D Lookup Table'</span>, <span class="string">'my_model/surfaceblock'</span> )
+</pre><p>2. Populate the Lookup Table with speed breakpoints, load breakpoints, and a lookup table.</p><pre class="language-matlab">set_param( <span class="string">'my_model/surfaceblock'</span>,<span class="keyword">...</span>
+    <span class="string">'BreakpointsForDimension1'</span>, <span class="string">'loadbreakpoints'</span>,<span class="keyword">...</span>
+    <span class="string">'BreakpointsForDimension2'</span>, <span class="string">'speedbreakpoints'</span>,<span class="keyword">...</span>
+    <span class="string">'Table'</span>, <span class="string">'tBSFC'</span> );
+</pre><p>3. Examine the populated Lookup Table block.</p><p class="footer">Copyright 2012 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br><br>
+		  MATLAB and Simulink are registered trademarks of The MathWorks, Inc.  Please see <a href="http://www.mathworks.com/trademarks">www.mathworks.com/trademarks</a> for a list of other trademarks owned by The MathWorks, Inc.  Other product or brand names are trademarks or registered trademarks of their respective owners.
+      </p></div><!--
+##### SOURCE BEGIN #####
+%% Fit Smooth Surfaces To Investigate Fuel Efficiency
+%
+% This example shows how to use Curve Fitting Toolbox(TM) to fit a response
+% surface to some automotive data to investigate fuel efficiency.
+%
+% The toolbox provides sample data generated from a GTPOWER predictive combustion
+% engine model. The model emulates a naturally aspirated spark-ignition, 2-liter,
+% inline 4-cylinder engine. You can fit smooth lowess surfaces to this data to
+% find minimum fuel consumption.
+%
+% The data set includes the required variables to model response surfaces:
+%
+% * Speed is in revolutions per minute (rpm) units.
+% * Load is the normalized cylinder air mass (the ratio of cylinder aircharge to
+% maximum naturally aspirated cylinder aircharge at standard temperature and
+% pressure).
+% * BSFC is the brake-specific fuel consumption in g/KWh. That is, the energy
+% flow in, divided by mechanical power out (fuel efficiency).
+%
+% The aim is to model a response surface to find the minimum BSFC as a function
+% of speed and load. You can use this surface as a table, included as part of a
+% hybrid vehicle optimization algorithm combining the use of a motor and your
+% engine. To operate the engine as fuel efficiently as possible, the table must
+% operate the engine near the bottom of the BSFC bowl.
+
+% Copyright 2012 The MathWorks, Inc.
+
+%% Load and Preprocess Data
+% Load the data from the XLS spreadsheet. Use the |'basic'| command option for
+% non-Windows(R) platforms.
+%
+% Create a variable |n| that has all the numeric data in one array.
+n = xlsread( 'Engine_Data_SI_NA_2L_I4.xls', 'SI NA 2L I4', '', 'basic' );
+
+%%
+% Extract from the variable |n| the columns of interest.
+SPEED = n(:,2);
+LOAD_CMD = n(:,3);
+LOAD = n(:,8);
+BSFC = n(:,22);
+
+%%
+% Process the data before fitting, to pick out the minimum BSFC values from each
+% sweep. The data points are organized in sweeps on speed/load.
+%
+% Get a list of the speed/load sites:
+SL = unique( [SPEED, LOAD_CMD], 'rows' );
+nRuns = size( SL, 1 );
+
+%%
+% For each speed/load site, find the data at the site and extract the
+% actual measured load and the minimum BSFC.
+minBSFC  = zeros( nRuns, 1 );
+Load     = zeros( nRuns, 1 );
+Speed    = zeros( nRuns, 1 );
+for i = 1:nRuns
+    idx = SPEED == SL(i,1) & LOAD_CMD == SL(i,2);
+    
+    minBSFC(i) = min(  BSFC(idx) );
+    Load(i)    = mean( LOAD(idx) );
+    Speed(i)   = mean( SPEED(idx) );
+end
+
+
+%% Fit a Surface
+% Fit a surface of fuel efficiency to the preprocessed data.
+f1 = fit( [Speed, Load], minBSFC, 'Lowess', 'Normalize', 'on' )
+
+%% Plot Fit
+plot( f1, [Speed, Load], minBSFC );
+xlabel( 'Speed [RPM]' );
+ylabel( 'Load [%]' );
+zlabel( 'Minimum BSFC [g/Kwh]' );
+
+%% Remove Problem Points
+% Review the resulting plot.
+%
+% There are points where BSFC is negative because this data is generated by an
+% engine simulation.
+%
+% Remove those problem data points by keeping points in the range [0, Inf].
+out = excludedata( Speed, minBSFC, 'Range', [0, Inf] );
+f2 = fit( [Speed, Load], minBSFC, 'Lowess', ...
+    'Normalize', 'on', 'Exclude', out )
+
+%%
+% Plot the new fit. Note that the excluded points are plotted as red crosses.
+plot( f2, [Speed, Load], minBSFC, 'Exclude', out );
+xlabel( 'Speed [RPM]' );
+ylabel( 'Load [%]' );
+zlabel( 'Minimum BSFC [g/Kwh]' );
+
+%% Zoom In
+% Zoom in on the part of the z-axis of interest.
+set( gca, 'ZLim', [0, max( minBSFC )] );
+
+%%
+% You want to operate the engine efficiently, so create a contour plot to see the
+% region where the BSFC is low. Use the plot function, and specify the name/value
+% parameter pair |'style','Contour'|.
+plot( f2, [Speed, Load], minBSFC, 'Exclude', out, 'Style', 'Contour' );
+xlabel( 'Speed [RPM]' );
+ylabel( 'Load [%]' );
+colorbar
+
+
+%% Create a Table from the Surface
+% Generate a table by evaluating the model |f2| over a grid of points.
+%
+% Create variables for the table breakpoints.
+
+speedbreakpoints = linspace( 1000, 5500, 17 );
+loadbreakpoints =  linspace( 0.2, 0.8, 13 );
+
+%%
+% To generate values for the table, evaluate the model over a grid of
+% points.
+[tSpeed, tLoad] = meshgrid( speedbreakpoints, loadbreakpoints );
+tBSFC = f2( tSpeed, tLoad );
+
+%%
+% Examine the rows and columns of the table at the command line.
+tBSFC(1:2:end,1:2:end)
+
+%% Plot the Table Against the Original Model
+% The grid on the model surface shows the table breakpoints.
+
+h = plot( f2 );
+set( h, 'EdgeColor', 'none' );
+hold on
+mesh( tSpeed, tLoad, tBSFC, ...
+    'LineStyle', '-', 'LineWidth', 2, 'EdgeColor', 'k', ...
+    'FaceColor', 'none', 'FaceAlpha', 1 );
+hold off
+xlabel( 'Speed [RPM]' );
+ylabel( 'Load [%]' );
+zlabel( 'Minimum BSFC [g/Kwh]' );
+
+%% Check the Table Accuracy
+%
+% View the difference between the model and the table by plotting the difference
+% between them on a finer grid. Then, use this difference in prediction accuracy
+% between the table and the model to determine the most efficient table size for
+% your accuracy requirements.
+%
+% The following code evaluates the model over a finer grid and plots the
+% difference between the model and the table.
+
+[tfSpeed, tfLoad] = meshgrid( ...
+    linspace( 1000, 5500, 8*17+1 ), ...
+    linspace( 0.2, 0.8, 8*13+1 ) );
+tfBSFC_model = f2( tfSpeed, tfLoad );
+tfBSFC_table = interp2( tSpeed, tLoad, tBSFC, tfSpeed, tfLoad, 'linear' );
+tfDiff = tfBSFC_model - tfBSFC_table;
+
+surf( tfSpeed, tfLoad, tfDiff, 'LineStyle', 'none'  );
+hold on
+mesh( tSpeed, tLoad, zeros( size( tBSFC ) ), ...
+    'LineStyle', '-', 'LineWidth', 2, 'EdgeColor', 'k', ...
+    'FaceColor', 'none', 'FaceAlpha', 1 );
+hold off
+axis tight
+xlabel( 'Speed [RPM]' );
+ylabel( 'Load [%]' );
+zlabel( 'Difference between model and table [g/Kwh]' );
+title( sprintf( 'Max difference: %g', max( abs( tfDiff(:) ) ) ) );
+
+
+%% Create a Table Array Including Breakpoint Values
+% After creating a table by evaluating a model fit over a grid of points, it can
+% be useful to export your table data from MATLAB. Before exporting, create a
+% table array that includes the breakpoint values in the first row and column.
+% The following command reshapes your data to this table format:
+%
+% * X (|speedbreakpoints|) is  a (1 x M) vector
+% * Y (|loadbreakpoints|) is an (N x 1) vector
+% * Z (|tBSFC|) is an (M x N) matrix
+table = [
+    {'Load\Speed'}, num2cell(speedbreakpoints(:).' )
+    num2cell(loadbreakpoints (:) ), num2cell( tBSFC )
+    ];
+
+%% Export Table to Spreadsheet File
+% You can use the |xlswrite| function to export your table data to a new Excel
+% Spreadsheet.  Execute the following command to create a spreadsheet file.
+%
+%   xlswrite( 'tabledata.xlsx', table )
+%
+
+%% Create a Lookup Table Block
+% If you have Simulink(TM) software, you can create a Look Up Table block as
+% follows. Execute the following code to try it out.
+%
+% 1. Create a model with a 2-D Lookup Table block.
+%
+%   simulink
+%   new_system( 'my_model' )
+%   open_system( 'my_model' )
+%   add_block( 'Simulink/Lookup Tables/2-D Lookup Table', 'my_model/surfaceblock' )
+%
+% 2. Populate the Lookup Table with speed breakpoints, load breakpoints, and
+% a lookup table.
+%
+%   set_param( 'my_model/surfaceblock',...
+%       'BreakpointsForDimension1', 'loadbreakpoints',...
+%       'BreakpointsForDimension2', 'speedbreakpoints',...
+%       'Table', 'tBSFC' );
+%
+% 3. Examine the populated Lookup Table block.
+
+displayEndOfDemoMessage(mfilename)
+
+##### SOURCE END #####
+--></body></html>

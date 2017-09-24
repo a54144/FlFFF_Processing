@@ -1,0 +1,125 @@
+[Method]
+[General]
+Identifier: 	Carrier1mMNaCl pH7 08122013
+SEC_Run: 	0
+ChOutFlow:  	0.7
+SlotFlow:   	0
+EndTime:    	120
+Spacer:     	350
+[Injection]
+InjectFlow: 	0.7
+InjectXFlow:	0
+InjectTime:	0
+Transtime:  	0
+[Elution]
+Rowanz:     	1
+Row:          	1
+Time 0:       	0
+Time 1:       	120
+Flow 0:       	0
+Flow 1:       	0
+Typ:          	1
+Exp:          	0
+[Rinsing]
+RinseTime:     	5
+RinseTipFlow:  	1
+RinseFocusFlow:	0
+RinseSlotFlow: 	0
+RinseValve: 	1
+[End Method]
+[Rundata]
+Runnumber:  	1
+User:       	postnova analytics
+Viscosity:  	0.0088
+RefIndex:   	1.33
+Solvent:    	NaCl_15mM
+Vial:       	0
+InjectVol:  	1000
+Conc:       	650
+dndc:       	0.165
+Extinction: 	0.152
+Sample:     	Quinine_Sulfate_1000ugL_in_0point05M_H2SO4_100uL_Carrier_NaCl_15mM_11052014_no_crossflow
+Description:	Quinine_Sulfate_1000ugL_in_0point05M_H2SO4_100uL_Carrier_NaCl_15mM_11052014_no_crossflow
+sample volume 100ul
+UV1 at 254nm aux range 1
+UV2 at 355nm range 0.0005
+Fluorescence 1 Ex/Em 350/450
+sensitivity 3 gain 3 mode 1 range 1
+Fluorescence 2 Ex/Em 350/450
+sensitivity 3 gain 3 mode 1 range 1
+membran: 300Da PES(polyetherfulfone)
+carrier solution NaCl_15mM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[End String]
+CycleAnz:   	2
+WhenInject: 	0
+ProjectDir: 	C:\AF2000 Data\20140910
+RunID:      	Quinine_Sulfate_1000ugL_in_0point05M_H2SO4_100uL_Carrier_NaCl_15mM_11052014_no_crossflow
+[End Run]

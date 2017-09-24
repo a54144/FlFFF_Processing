@@ -1,0 +1,8 @@
+Sample Lake 1 Retentate.dat
+Sample Lake 5 Retentate.dat
+Sample Lake 2 Retentate 2nd.dat
+Sample Lake 6 Retentate.dat
+Sample Lake 3 Retentate.dat
+Sample Lake 7 Retentate.dat
+Sample Lake 4 Retentate.dat
+Sample Lake 8 Retentate.dat

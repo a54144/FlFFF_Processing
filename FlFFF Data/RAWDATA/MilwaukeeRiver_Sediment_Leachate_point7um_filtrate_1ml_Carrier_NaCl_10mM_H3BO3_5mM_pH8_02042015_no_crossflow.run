@@ -1,0 +1,138 @@
+[Method]
+[General]
+Identifier: 	Carrier1mMNaCl pH7 08122013
+SEC_Run: 	0
+ChOutFlow:  	0.7
+SlotFlow:   	0
+EndTime:    	120
+Spacer:     	350
+[Injection]
+InjectFlow: 	0.7
+InjectXFlow:	0
+InjectTime:	0
+Transtime:  	0
+[Elution]
+Rowanz:     	1
+Row:          	1
+Time 0:       	0
+Time 1:       	120
+Flow 0:       	0
+Flow 1:       	0
+Typ:          	1
+Exp:          	0
+[Rinsing]
+RinseTime:     	5
+RinseTipFlow:  	1
+RinseFocusFlow:	0
+RinseSlotFlow: 	0
+RinseValve: 	1
+[End Method]
+[Rundata]
+Runnumber:  	1
+User:       	postnova analytics
+Viscosity:  	0.0088
+RefIndex:   	1.33
+Solvent:    	NaCl_15mM
+Vial:       	0
+InjectVol:  	1000
+Conc:       	650
+dndc:       	0.165
+Extinction: 	0.152
+Sample:     	MilwaukeeRiver_Sediment_Leachate_point7um_filtrate_1ml_Carrier_NaCl_10mM_H3BO3_5mM_pH8_02042015_no_crossflow
+Description:	MilwaukeeRiver_Sediment_Leachate_point7um_filtrate_1ml_Carrier_NaCl_10mM_H3BO3_5mM_pH8_02042015_no_crossflow
+sample volume 1ml
+UV1 at 254nm aux range 1
+UV2 at 280nm range 0.01
+Fluorescence 1 Ex/Em 350/450
+sensitivity 2 gain 3 mode 1 range 2
+Fluorescence 2 Ex/Em 275/340 
+sensitivity 2 gain 2 mode 1 range 1
+membran: 300Da PES(polyetherfulfone)
+sample volume 1ml
+carrier solution NaCl_15mM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[End String]
+CycleAnz:   	2
+WhenInject: 	0
+ProjectDir: 	C:\AF2000 Data\20140910
+RunID:      	MilwaukeeRiver_Sediment_Leachate_point7um_filtrate_1ml_Carrier_NaCl_10mM_H3BO3_5mM_pH8_02042015_no_crossflow
+[End Run]

@@ -1,0 +1,4 @@
+Tube Time_PSS_1point6kDa_800mgL_15mM_10082014.dat
+Tube Time_PSS_1point6kDa_800mgL_15mM_10082014_(1).dat
+Tube Time_PSS_1point6kDa_800mgL_15mM_10082014_(2).dat
+Tube Time_PSS_1point6kDa_800mgL_15mM_10082014_(3).dat
